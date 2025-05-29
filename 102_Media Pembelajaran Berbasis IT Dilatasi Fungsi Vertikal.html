@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Modul Interaktif - Dilatasi Vertikal</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.2.min.js"></script>
+    <style>
+      body {
+        font-family: "Times New Roman", serif;
+        max-width: 960px;
+        margin: auto;
+        padding: 40px;
+        background-color: #f5f5f5;
+        line-height: 1.6;
+      }
+      h1 {
+        text-align: center;
+        color: #00796b;
+      }
+      h2 {
+        color: #00796b;
+      }
+      .intro {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.1em;
+      }
+      .button-container {
+        text-align: center;
+        margin-top: 40px;
+      }
+      .button-container button {
+        background-color: #00796b;
+        color: white;
+        padding: 15px 30px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .section {
+        margin-top: 40px;
+        background: white;
+        padding: 20px;
+        border-left: 5px solid #00796b;
+      }
+      .highlight {
+        background-color: #e0f7fa;
+        padding: 15px;
+        border-left: 5px solid #00796b;
+      }
+      #graph {
+        height: 500px;
+      }
+      textarea {
+        width: 100%;
+        margin-top: 10px;
+        height: 100px;
+      }
+      input[type="number"],
+      select {
+        margin-top: 10px;
+      }
+      .inline-input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      input.short {
+        width: 100px;
+      }
+      .feedback {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .correct {
+        color: green;
+      }
+      .incorrect {
+        color: red;
+      }
+      .petunjuk {
+        font-style: italic;
+        background-color: #fffde7;
+        padding: 10px;
+        margin: 10px 0;
+        border-left: 4px solid #fbc02d;
+      }
+      .collapsible {
+        background-color: #00796b;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+      .active,
+      .collapsible:hover {
+        background-color: #005f56;
+      }
+      .content {
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        background-color: white;
+        border-left: 5px solid #00796b;
+      }
+
+      .soal {
+        margin-bottom: 20px;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        background-color: #f9f9f9;
+      }
+
+      .soal label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: 16px;
+        color: #333;
+      }
+
+      .soal input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+        border: 1px solid #bbb;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+
+      .soal button {
+        background-color: #4caf50;
+        color: white;
+        padding: 8px 16px;
+        font-size: 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .soal button:hover {
+        background-color: #45a049;
+      }
+
+      .feedback {
+        margin-top: 8px;
+        font-weight: bold;
+        padding: 8px;
+        border-radius: 6px;
+      }
+
+      .feedback.correct {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+      }
+
+      .feedback.incorrect {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Selamat Datang di Media Pembelajaran Berbasis IT</h1>
+    <div class="intro">
+      <p>
+        Media Pembelajaran ini dirancang untuk membantu peserta didik menemukan
+        konsep dilatasi vertikal pada fungsi melalui pendekatan
+        eksploratif dan interaktif.
+      </p>
+    </div>
+
+    <button type="button" class="collapsible">Capaian Pembelajaran</button>
+    <div class="content">
+      <p>
+        Peserta didik dapat menyatakan data dalam bentuk matriks. Mereka dapat
+        menentukan fungsi invers, komposisi fungsi, dan transformasi fungsi
+        untuk memodelkan situasi dunia nyata menggunakan fungsi yang sesuai
+        (linear, kuadrat, eksponensial).
+      </p>
+    </div>
+
+    <button type="button" class="collapsible">Tujuan Pembelajaran</button>
+    <div class="content">
+      <p>
+        Peserta didik dapat menemukan konsep dilatasi fungsi vertikal melalui
+        eksplorasi perubahan bentuk grafik dari fungsi dasar akibat perubahan
+        nilai <strong>k</strong> pada transformasi <strong>k·f(x)</strong>.
+      </p>
+    </div>
+
+    <div class="button-container">
+      <button onclick="tampilkanSimulasi()">Mulai Simulasi</button>
+      <button onclick="tampilkanLatihanSoal()">Mulai Latihan Soal</button>
+    </div>
+
+    <div id="latihansoalSection" style="display: none; margin-top: 20px">
+      <div class="section">
+        <h2>Latihan Soal 1</h2>
+        <div class="petunjuk">
+          Jawablah soal-soal berikut dan tekan "Cek Jawaban" untuk mendapatkan
+          umpan balik.
+        </div>
+        <div id="latihan1"></div>
+      </div>
+
+      <div class="section">
+        <h2>Latihan Soal 2</h2>
+        <div class="petunjuk">Lanjutkan menjawab soal-soal berikut:</div>
+        <div id="latihan2"></div>
+      </div>
+    </div>
+
+    <div id="simulasiSection" style="display: none">
+      <div class="section">
+        <h2>1. Stimulasi</h2>
+        <p>
+          Apa yang terjadi pada grafik fungsi jika dikalikan dengan suatu
+          bilangan k?
+        </p>
+        <textarea placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="section">
+        <h2>2. Eksplorasi Grafik</h2>
+        <div class="petunjuk">
+          <p><strong>Petunjuk Eksplorasi:</strong></p>
+          <ul>
+            <li>
+              Pilih fungsi dasar <strong>f(x) = x²</strong>, lalu ubah nilai k
+              menjadi 2, 0.5, dan -1. Amati perubahannya.
+            </li>
+            <li>
+              Ganti fungsi menjadi <strong>f(x) = |x|</strong>, ulangi langkah
+              dengan nilai k yang sama.
+            </li>
+            <li>
+              Lakukan hal yang sama untuk <strong>√x</strong>,
+              <strong>sin(x)</strong>, <strong>cos(x)</strong>, dan
+              <strong>tan(x)</strong>.
+            </li>
+            <li>Catat apa yang kamu amati setiap kali k berubah.</li>
+          </ul>
+        </div>
+
+        <label for="fungsi">Pilih Fungsi Dasar:</label>
+        <select id="fungsi">
+          <option value="Math.pow(xi, 2)" selected>f(x) = x²</option>
+          <option value="Math.abs(xi)">f(x) = |x|</option>
+          <option value="Math.sqrt(Math.abs(xi))">f(x) = √x</option>
+          <option value="Math.sin(xi)">f(x) = sin(x)</option>
+          <option value="Math.cos(xi)">f(x) = cos(x)</option>
+          <option value="Math.tan(xi)">f(x) = tan(x)</option>
+        </select>
+
+        <div class="inline-input">
+          <label for="aInput">Masukkan nilai k:</label>
+          <input type="number" step="0.1" id="aInput" value="1" class="short" />
+        </div>
+
+        <div id="graph"></div>
+
+        <div class="highlight">
+          Catatan: Ubah nilai k dan amati perubahan bentuk grafiknya.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>3. Temukan Polanya</h2>
+        <div class="petunjuk">
+          <p>
+            Tuliskan pola umum yang kamu temukan berdasarkan eksplorasi nilai k:
+          </p>
+        </div>
+        <p><strong>a.</strong> Jika <strong>k > 1</strong>, maka grafik ...</p>
+        <textarea id="polaA" placeholder="Jawabanmu di sini..."></textarea>
+        <button onclick="cekPola('polaA', ['memanjang', 'vertikal'])">
+          Cek Jawaban
+        </button>
+        <div id="feedback-polaA" class="feedback"></div>
+
+        <p>
+          <strong>b.</strong> Jika <strong>0 < k < 1</strong>, maka grafik ...
+        </p>
+        <textarea id="polaB" placeholder="Jawabanmu di sini..."></textarea>
+        <button onclick="cekPola('polaB', ['mengecil', 'vertikal'])">
+          Cek Jawaban
+        </button>
+        <div id="feedback-polaB" class="feedback"></div>
+
+        <p><strong>c.</strong> Jika <strong>k < 0</strong>, maka grafik ...</p>
+        <textarea id="polaC" placeholder="Jawabanmu di sini..."></textarea>
+        <button onclick="cekPola('polaC', ['dicerminkan', 'vertikal'])">
+          Cek Jawaban
+        </button>
+        <div id="feedback-polaC" class="feedback"></div>
+      </div>
+
+      <div class="section">
+        <h2>4. Kesimpulan</h2>
+        <div class="petunjuk">
+          Tulis kesimpulanmu secara lengkap berdasarkan pola yang kamu temukan.
+        </div>
+        <textarea
+          id="kesimpulan"
+          placeholder="Kesimpulanmu di sini..."
+        ></textarea>
+        <button onclick="cekKesimpulan()">Cek Kesimpulan</button>
+        <div id="feedback" class="feedback"></div>
+      </div>
+    </div>
+
+    <script>
+      const coll = document.getElementsByClassName("collapsible");
+      for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+          this.classList.toggle("active");
+          const content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        });
+      }
+
+      function tampilkanSimulasi() {
+        const simulasi = document.getElementById("simulasiSection");
+        const latihan = document.getElementById("latihansoalSection");
+
+        if (simulasi.style.display === "block") {
+          // Kalau sudah tampil, sembunyikan
+          simulasi.style.display = "none";
+        } else {
+          // Kalau belum tampil, tampilkan dan sembunyikan latihan
+          simulasi.style.display = "block";
+          latihan.style.display = "none";
+          updateGraph()
+        }
+      }
+
+      function tampilkanLatihanSoal() {
+        const latihan = document.getElementById("latihansoalSection");
+        const simulasi = document.getElementById("simulasiSection");
+
+        if (latihan.style.display === "block") {
+          latihan.style.display = "none";
+        } else {
+          latihan.style.display = "block";
+          simulasi.style.display = "none";
+
+          buatLatihan("latihan1", 0, 1);
+          buatLatihan("latihan2", 0, 2);
+        }
+      }
+
+    
+
+      const fungsiSelect = document.getElementById("fungsi");
+      const aInput = document.getElementById("aInput");
+      const x = Array.from({ length: 201 }, (_, i) => (i - 100) / 5);
+
+      function hitungY(fungsiStr) {
+        return x.map((xi) => {
+          try {
+            return eval(fungsiStr);
+          } catch (e) {
+            return NaN;
+          }
+        });
+      }
+
+      function updateGraph() {
+        const a = parseFloat(aInput.value);
+        const fungsiDasar = fungsiSelect.value;
+        const f = hitungY(fungsiDasar);
+        const af = f.map((yi) => a * yi);
+
+        const trace1 = {
+          x: x,
+          y: f,
+          mode: "lines",
+          name: "f(x)",
+          line: { color: "gray", dash: "dot" },
+        };
+
+        const trace2 = {
+          x: x,
+          y: af,
+          mode: "lines",
+          name: "k·f(x)",
+          line: { color: "blue" },
+        };
+
+        Plotly.newPlot("graph", [trace1, trace2], {
+          margin: { t: 20 },
+          xaxis: { title: "x" },
+          yaxis: { title: "y" },
+        });
+      }
+
+      fungsiSelect.addEventListener("change", updateGraph);
+      aInput.addEventListener("input", updateGraph);
+      window.onload = updateGraph;
+
+      // document.getElementById("aInput").addEventListener("input", plotGraph);
+      // document.getElementById("fungsi").addEventListener("change", plotGraph);
+
+      function cekPola(id, keywordArray) {
+        const jawaban = document.getElementById(id).value.toLowerCase();
+        const benar = keywordArray.every((keyword) =>
+          jawaban.includes(keyword)
+        );
+
+        console.log(jawaban, keywordArray);
+
+        const feedback = document.getElementById("feedback-" + id);
+        if (benar) {
+          feedback.textContent = "Jawaban benar!";
+          feedback.className = "feedback correct";
+        } else {
+          feedback.textContent = "Coba lagi. Perhatikan kembali grafiknya.";
+          feedback.className = "feedback incorrect";
+        }
+      }
+
+      function cekKesimpulan() {
+  const text = document.getElementById("kesimpulan").value.toLowerCase();
+  
+  const jawabanBenar = "dilatasi vertikal adalah transformasi yang mengubah bentuk grafik fungsi secara vertikal dengan cara mengalikan hasil fungsi f(x) dengan suatu konstanta k.";
+  if (text.trim() === jawabanBenar.toLowerCase()) {
+    feedback.textContent = "✅ Jawabanmu sudah tepat dan lengkap!";
+    feedback.className = "feedback correct";
+    return;
+  }
+
+  const containsDilatasi = text.includes("dilatasi");
+  const containsK = text.includes("k");
+  const containsVertikal = text.includes("vertikal");
+  const feedback = document.getElementById("feedback");
+  
+  if (containsDilatasi && containsK && containsVertikal) {
+    feedback.textContent = "Kesimpulan kamu sudah tepat!";
+    feedback.className = "feedback correct";
+  } else {
+    feedback.textContent =
+      "Kesimpulan kurang lengkap. Gunakan kata kunci seperti 'dilatasi', 'k', dan 'vertikal'.";
+    feedback.className = "feedback incorrect";
+  }
+}
+
+
+      function cekJawaban(id, kunciJawaban) {
+        const jawaban = document.getElementById(id).value.toLowerCase();
+        const feedback = document.getElementById("feedback-" + id);
+
+        // Gabungkan semua kunci jawaban menjadi satu string dipisahkan spasi
+        const gabunganKunci = kunciJawaban.join(" ").toLowerCase();
+
+        console.log(gabunganKunci);
+
+        // Cek apakah jawaban persis sama dengan gabungan kunci
+        const jawabanBenar = jawaban === gabunganKunci;
+
+        // Atau bisa juga hanya dicek apakah mengandung kata-kata penting
+        // const jawabanBenar = jawaban.includes(gabunganKunci);
+
+        if (jawabanBenar) {
+          feedback.textContent = "Jawaban benar!";
+          feedback.className = "feedback correct";
+        } else {
+          feedback.textContent =
+            "Jawaban kurang tepat. Gunakan kata-kata kunci yang sesuai.";
+          feedback.className = "feedback incorrect";
+        }
+      }
+
+      function buatLatihan(containerId, startIdx, soalKe) {
+        const soalListSatu = [
+          [
+            "Jika f(x) = x², maka g(x) = 3f(x) menghasilkan grafik yang...?",
+            ["Parabola membuka ke atas, lebih curam (emanjang vertikal)"],
+          ],
+          [
+            "Jika f(x) = x², maka g(x) = 0.5f(x) berbentuk?",
+            ["Parabola yang lebih landai (mengecil vertikal)"],
+          ],
+          [
+            "Bentuk grafik g(x) = -x² adalah...",
+            ["Parabola yang dicerminkan terhadap sumbu x"],
+          ],
+          [
+            "Fungsi f(x) = |x|, jika dilatasi vertikal dengan k = 2, maka grafik akan...",
+            ["Lebih tajam dan memanjang ke atas"],
+          ],
+          [
+            "Bentuk grafik dari y = 0.25|x| dibanding |x| adalah?",
+            ["Lebih lebar dan lebih mendatar"],
+          ],
+          ["Jika y = -|x|, maka grafik akan", ["Dicerminkan terhadap sumbu x"]],
+          [
+            "Grafik y = √x mengalami dilatasi vertikal jika menjadi y = 1.5√x. Apa yang terjadi?",
+            ["Grafik lebih tinggi dan memanjang secara vertikal"],
+          ],
+          [
+            "Jika y = -2√x, maka grafik mengalami...",
+            ["Cerminan terhadap sumbu x dan memanjang ke bawah."],
+          ],
+          ["Apa bentuk grafik y = 0.6√x?", ["Lebih mendatar dari grafik √x."]],
+          [
+            "Fungsi y = kx² terlihat sama dengan grafik x² hanya jika...",
+            ["k=1"],
+          ],
+        ];
+
+        const soalListDua = [
+          [
+            "Jika y = 2sin(x), apa perubahan dari grafik dasar sin(x)?",
+            ["Amplitudo bertambah dua kali lipat"],
+          ],
+          [
+            "Bentuk grafik dari y = -sin(x) akan...",
+            ["Dicerminkan terhadap sumbu x"],
+          ],
+          [
+            "Jika y = 0.5sin(x), bagaimana bentuk grafiknya?",
+            ["Lebih pendek, amplitudo berkurang"],
+          ],
+          [
+            "Fungsi y = 3cos(x) mengalami transformasi apa?",
+            ["Amplitudo naik menjadi 3"],
+          ],
+          [
+            "Grafik y = -2cos(x) dibanding cos(x) adalah...",
+            ["Dicerminkan dan lebih tinggi (amplitudo 2)"],
+          ],
+          [
+            "Apa bentuk dari y = 0.25cos(x)?",
+            ["Amplitudo kecil, grafik mendatar"],
+          ],
+          [
+            "Jika y = tan(x), lalu berubah jadi y = -tan(x), apa yang terjadi?",
+            ["Dicerminkan terhadap sumbu x"],
+          ],
+          ["Grafik y = 2tan(x) akan...", ["Memanjang secara vertikal"]],
+          [
+            "Fungsi y = -0.5tan(x) berubah bagaimana?",
+            ["Cerminan terhadap sumbu x dan mengecil vertikal"],
+          ],
+          [
+            "Apa perbedaan mendasar antara y = tan(x) dan y = k·tan(x) untuk k > 1?",
+            ["Grafik lebih curam atau vertikal (lebih tinggi tiap siklus)"],
+          ],
+        ];
+
+        const soalList = soalKe === 1 ? soalListSatu : soalListDua;
+
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+
+        for (let i = startIdx; i < soalList.length; i++) {
+          const [pertanyaan, kunciJawaban] = soalList[i];
+          const id = `jawaban-${containerId}-${i}`;
+          const soalDiv = document.createElement("div");
+          soalDiv.classList.add("soal");
+
+          const label = document.createElement("label");
+          label.textContent = `${i + 1}. ${pertanyaan}`;
+          label.setAttribute("for", id);
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.id = id;
+
+          const button = document.createElement("button");
+          button.textContent = "Cek Jawaban";
+          button.onclick = () => cekJawaban(id, kunciJawaban);
+
+          const feedback = document.createElement("div");
+          feedback.id = `feedback-${id}`;
+          feedback.className = "feedback";
+
+          soalDiv.appendChild(label);
+          soalDiv.appendChild(input);
+          soalDiv.appendChild(button);
+          soalDiv.appendChild(feedback);
+
+          container.appendChild(soalDiv);
+        }
+      }
+    </script>
+  </body>
+</html>
